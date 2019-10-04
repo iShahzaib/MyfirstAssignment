@@ -11,7 +11,7 @@ MongoClient.connect(url, function(err, db) {
   let myobj = JSON.parse(cityData);  
   dbo.collection("Users").insertMany(myobj, function(err, res) {
     if (err) throw err;
-    console.log("1 document inserted " + res.insertedCount);
+    console.log("No. of document inserted " + res.insertedCount);
     db.close();
   });
 });
@@ -26,7 +26,7 @@ MongoClient.connect(url, function(err, db) {
   let myobj = JSON.parse(cityData);  
   dbo.collection("UsersProfile").insertMany(myobj, function(err, res) {
     if (err) throw err;
-    console.log("1 document inserted " + res.insertedCount);
+    console.log("No. of document inserted " + res.insertedCount);
     db.close();
   });
 });
