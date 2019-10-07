@@ -1,4 +1,4 @@
-[
+const obj = [
 	{ "user_id": "01",
 	  "dob": "01/01/1991",
 	  "Mobile_no": "9999988888"
@@ -20,3 +20,4 @@
 	  "Mobile_no": "9999944444"
 	}
 ]
+module.exports = obj;

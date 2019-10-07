@@ -1,4 +1,4 @@
-[
+const obj = [
 	{ "firstname": "Nirmal",
 	  "email": "Nirmal@gmail.com",
 	  "lastname": "Gulati",
@@ -13,3 +13,4 @@
 	  "lastname": "Khan", "password": "1789"
 	}
 ]
+module.exports = obj;
