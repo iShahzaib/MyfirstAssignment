@@ -1,105 +1,82 @@
 var mongoose = require('mongoose');
 var conn = mongoose.createConnection('mongodb://127.0.0.1/mydb');
-var post_schema1 = mongoose.Schema({}, {
+var async = require('async');
+var md5 = require('md5');
+const Schema = mongoose.Schema;
+
+var Users_schema = mongoose.Schema({
+    firstname: String,
+    email: String,
+    lastname: String,
+    password: Number,
+},  {
     strict: false,
     collection: 'Users'
 });
-var post_schema2 = mongoose.Schema({ user_id : Number, dob : Date }, {
+var UsersProfile_schema = mongoose.Schema({
+    user_id: { type: Schema.Types.ObjectId, ref: 'Users' },
+    dob: Date,
+    Mobile_no: String, 
+}, {
     strict: false,
     collection: 'UsersProfile'
 });
-var post1 = conn.model('Users', post_schema1);
-var post2 = conn.model('UsersProfile', post_schema2);
+var Users = conn.model('Users', Users_schema);
+var UsersProfile = conn.model('UsersProfile', UsersProfile_schema);
 
-const ud = require('./User_data.js');
-const upd = require('./User_profile_data.js');
+const usersdata = require('./User_data.json');
+const usersprofiledata = require('./User_profile_data.json');
 
-// insert data into users and userprofile collection.
+// insert data into users collection.
 
-insertAndNotify1(ud, function(err) {
+async.eachSeries(usersdata, insertUserData, function (err) {
     if (err) {
-        console.log(err);
-        process.exit();
+        console.log('OOPS! How is this possible?');
     }
 });
- 
-function insertAndNotify1(ud, callback) {
- 
-    var inserted = 0;
-    for (var i = 0; i < ud.length; i++) {
-        (function(row) {
-            //anonymouse function for scope
-            var new_post = new post1(ud[i]);
-            new_post.save(function(err, row) {
 
+function insertUserData(usersdata, callback) {
+    var inserted = 0;
+    (function(row) {
+            var new_post = new Users(usersdata);
+            new_post.save(function(err, row) {
                 if (err) {
                     console.log(err);
                 }
                 else {
                     inserted++;
-                    if (inserted == ud.length) {
+                    if (inserted == usersdata.length) {
                         callback();
                     }
                 }
             });
-        })(ud[i]);
-    }
+    })(usersdata);
+    callback(null);
 }
 
-insertAndNotify2(upd, function(err) {
+// insert data into userprofile collection.
+
+async.eachSeries(usersprofiledata, insertUserProfileData, function (err) {
     if (err) {
-        console.log(err);
-        process.exit();
+        console.log('OOPS! How is this possible?');
     }
-    process.exit();
 });
  
-function insertAndNotify2(upd, callback) {
- 
+function insertUserProfileData(usersprofiledata, callback) {
     var inserted = 0;
-    for (var i = 0; i < upd.length; i++) {
-        (function(row) {
-            //anonymouse function for scope
-            var new_post = new post2(upd[i]);
-            new_post.save(function(err, row) {
-
-                if (err) {
-                    console.log(err);
+    (function(row) {
+        var new_post = new UsersProfile(usersprofiledata);
+        new_post.save(function(err, row) {
+            if (err) {
+                console.log(err);
+            }
+            else {
+                inserted++;
+                if (inserted == usersprofiledata.length) {
+                    callback();
                 }
-                else {
-                    inserted++;
-                    if (inserted == upd.length) {
-                        callback();
-                    }
-                }
-            });
-        })(upd[i]);
-    }
+            }
+        });
+    })(usersprofiledata);
+    callback(null);
 }
-
-function calculate_age(dob) { 
-    var diff_ms = Date.now() - dob.getTime();
-    var age_dt = new Date(diff_ms); 
-  
-    return Math.abs(age_dt.getUTCFullYear() - 1970);
-}
-
-// Average age of all users
-
-post2.find({}, function(error, comments) {
-    comment = JSON.parse(JSON.stringify(comments));
-    var sum=0;
-    console.log('\n');
-    for(var i=0; i<comments.length; i++){
-      var x = calculate_age(new Date(comment[i].dob));
-      console.log(x);
-      sum=sum+x;
-    }
-    console.log("\nAverage age of all users : " + sum/comments.length);
-});
-
-// Delete users who’s age is more than 25yrs
-
-post2.deleteMany({ dob : { $lt : new Date("01/01/1994")}}, function(error, comments){
-    console.log(comments);
-});
