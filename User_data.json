@@ -1,4 +1,4 @@
-const obj = [
+[
 	{ "firstname": "Nirmal",
 	  "email": "Nirmal@gmail.com",
 	  "lastname": "Gulati",
@@ -11,6 +11,13 @@ const obj = [
 	{ "firstname": "Shoaib",
 	  "email": "Shoaib@gmail.com",
 	  "lastname": "Khan", "password": "1789"
+	},
+	{ "firstname": "Asif",
+	  "email": "Asif@gmail.com",
+	  "lastname": "Ali", "password": "2123"
+	},
+	{ "firstname": "Nasir",
+	  "email": "Nasir@gmail.com",
+	  "lastname": "Ansari", "password": "2456"
 	}
 ]
-module.exports = obj;
