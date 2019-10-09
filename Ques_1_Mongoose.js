@@ -9,25 +9,19 @@ var Users_schema = mongoose.Schema({
     email: String,
     lastname: String,
     password: Number,
+    user_id: { type: Schema.Types.ObjectId, ref: 'Users' },
+    dob: Date,
+    Mobile_no: String, 
 },  {
     strict: false,
     collection: 'Users'
 });
-var UsersProfile_schema = mongoose.Schema({
-    user_id: { type: Schema.Types.ObjectId, ref: 'Users' },
-    dob: Date,
-    Mobile_no: String, 
-}, {
-    strict: false,
-    collection: 'UsersProfile'
-});
+
 var Users = conn.model('Users', Users_schema);
-var UsersProfile = conn.model('UsersProfile', UsersProfile_schema);
 
 const usersdata = require('./User_data.json');
-const usersprofiledata = require('./User_profile_data.json');
 
-// insert data into users collection.
+// insert data into users and userprofile collection.
 
 async.eachSeries(usersdata, insertUserData, function (err) {
     if (err) {
@@ -36,47 +30,16 @@ async.eachSeries(usersdata, insertUserData, function (err) {
 });
 
 function insertUserData(usersdata, callback) {
-    var inserted = 0;
-    (function(row) {
-            var new_post = new Users(usersdata);
+    (async function(row) {
+            var new_post = await new Users(usersdata);
+            console.log(new_post);
             new_post.save(function(err, row) {
                 if (err) {
                     console.log(err);
                 }
                 else {
-                    inserted++;
-                    if (inserted == usersdata.length) {
-                        callback();
-                    }
+                    callback();
                 }
             });
     })(usersdata);
-    callback(null);
-}
-
-// insert data into userprofile collection.
-
-async.eachSeries(usersprofiledata, insertUserProfileData, function (err) {
-    if (err) {
-        console.log('OOPS! How is this possible?');
-    }
-});
- 
-function insertUserProfileData(usersprofiledata, callback) {
-    var inserted = 0;
-    (function(row) {
-        var new_post = new UsersProfile(usersprofiledata);
-        new_post.save(function(err, row) {
-            if (err) {
-                console.log(err);
-            }
-            else {
-                inserted++;
-                if (inserted == usersprofiledata.length) {
-                    callback();
-                }
-            }
-        });
-    })(usersprofiledata);
-    callback(null);
 }
