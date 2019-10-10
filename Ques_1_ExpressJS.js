@@ -1,33 +1,26 @@
-var express = require('express');  
-var app = express(); 
-var bodyParser = require('body-parser');  
-// Create application/x-www-form-urlencoded parser  
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
+var express = require('express');
+var router = express.Router();
 
-app.use(express.static('public'));
-
-let obj = {};
-
-app.post('/register', urlencodedParser, function (req, res) {  
-   // Prepare output in JSON format  
-    response = {  
-       username : req.body.user_name,
-       password : req.body.password,
-       confirmpassword : req.body.confirm_password,
-       email : req.body.email_id,
-       firstname : req.body.first_name,
-       lastname : req.body.last_name,
-
-   }; 
-   obj = JSON.stringify(response)
-   console.log(response);  
-   res.send("Account has been created");
-})
-var server = app.listen(8000, function () {  
+/* GET users listing. */
+router.post('/', function(req, res, next) {
+     // Prepare output in JSON format  
+      response = {  
+         username : req.body.user_name,
+         password : req.body.password,
+         confirmpassword : req.body.confirm_password,
+         email : req.body.email_id,
+         firstname : req.body.first_name,
+         lastname : req.body.last_name,
   
-  var host = server.address().address  
-  var port = server.address().port  
-  console.log("Example app listening at http://%s:%s", host, port)  
-  
-})  
-module.exports = {obj};
+     }; 
+     obj = JSON.stringify(response)
+     console.log(obj);    
+
+  res.send('Account has been created');
+});
+
+router.get('/list', function(req, res) {
+  res.render('index', { title: 'User List' });
+});
+
+module.exports = router;
