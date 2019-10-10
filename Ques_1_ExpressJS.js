@@ -22,5 +22,4 @@ router.post('/', function(req, res, next) {
 router.get('/list', function(req, res) {
   res.render('index', { title: 'User List' });
 });
-
 module.exports = router;
