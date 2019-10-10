@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.post('/', function(req, res, next) {
        // Prepare output in JSON format  
        response = {  
         username : req.body.user_name,
